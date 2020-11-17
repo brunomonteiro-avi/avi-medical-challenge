@@ -1,5 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
+//simple function of network call - Axios Instance
+
 const AxiosInstance = axios.create({
     baseURL: 'http://94.237.101.207:8080/api/',
     timeout: 1000,

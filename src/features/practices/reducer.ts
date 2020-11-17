@@ -1,14 +1,16 @@
 import * as Actions from './actions';
+import { Practice } from './types'
 
+// Initial State for Practice reducer
 export const initialState: any = {
     error: null,
     loading: false,
-    practices: [],
-    selectedPractice: null
+    practices: [] as Practice[] ,
+    selectedPractice: null 
 };
 
 export default function (state: any = initialState, action: any) {
-   
+
     switch (action.type) {
         case Actions.GET_PRACTICES_REQUEST:
             return {
@@ -28,7 +30,7 @@ export default function (state: any = initialState, action: any) {
             return {
                 ...state,
                 loading: false,
-                practices
+                practices,
             };
         }
         case Actions.SET_SELECTED_PRACTICE: {

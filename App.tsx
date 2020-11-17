@@ -24,10 +24,11 @@ import  AppNavigation  from './src/config/appNavigator';
 
 const App = () => {
   return (
+    // Redux Provider hoc to set the sote
     <Provider store={store}>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={{ flex: 1 }}>
-        <NavigationContainer>
+        <NavigationContainer> 
            <AppNavigation/>
         </NavigationContainer>
       </SafeAreaView>

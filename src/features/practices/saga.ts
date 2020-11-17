@@ -2,12 +2,14 @@ import { takeLatest, call, put } from 'redux-saga/effects';
 import * as Actions from './actions';
 import { Network, Endpoints } from '../../networking';
 
+// watcher for practices
 export function* watchPracticesSaga() {
     yield takeLatest(
         Actions.GET_PRACTICES_REQUEST,
         getPractices,
     );
 }
+
 
 export function* getPractices(action: any) {
     try {
@@ -24,6 +26,7 @@ export function* getPractices(action: any) {
     }
 }
 
+//Api call to get practices
 export function getPracticesCall(action: any) {
     const url = Endpoints.GET_PRACTICES_ENDPOINT;
     const config: any = {

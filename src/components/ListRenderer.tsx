@@ -1,22 +1,27 @@
 import React from 'react';
 import {
-    View,
-    Text,
     FlatList,
-    TouchableOpacity
 } from 'react-native';
-import styled from 'styled-components/native';
+import { 
+    Card,
+    Separator,
+    AddressView,
+    Title,
+    Subtitle
+  } from './styled'
+
+// a Simple list render (flatlist) for Practices (we can also change it generic)
 
 const ListRenderer = (props: any) => {
     const {
         data,
         renderSeparator = () => null,
-        scrollEnabled = false,
-        showsVerticalScrollIndicator= false,
-        keyExtractor = (item :any, index: any) => index.toString(),
+        scrollEnabled = true,
+        showsVerticalScrollIndicator = false,
+        keyExtractor = (item: any, index: any) => index.toString(),
         onItemSelect,
         ...rest
-      } = props;
+    } = props;
 
     const onSelect = (item: any) => {
         onItemSelect(item);
@@ -25,25 +30,33 @@ const ListRenderer = (props: any) => {
     return (
         <>
             <FlatList
-                style={{ flex: 1,  }}
+                style={{ flexGrow: 1 }}
+                contentContainerStyle={{paddingVertical : 12 }} 
                 extraData={data}
                 data={data}
                 showsVerticalScrollIndicator={showsVerticalScrollIndicator}
                 scrollEnabled={scrollEnabled}
-                ItemSeparatorComponent={() => null}
+                ItemSeparatorComponent={() => <Separator />}
                 keyExtractor={keyExtractor}
                 renderItem={({ item }: any) => {
+                    const { name, address   } =  item;
+                    const { postCode, street, city   } =  address;
                     return (
-                        <TouchableOpacity onPress={() => onSelect(item)} activeOpacity={0.7}>
-                            <Text> Click me</Text>
-                        </TouchableOpacity>
+                        <Card onPress={() => onSelect(item)} activeOpacity={0.7}>
+                            <Title>{name}</Title>
+                            <AddressView>
+                                <Subtitle>{`${street}, ${city}`}</Subtitle>
+                                <Subtitle {...{ italic : true}}>{postCode}</Subtitle>
+                            </AddressView>
+                        </Card>
                     )
                 }}
-                {...rest}
+                {...rest} //for the rest of props if want to pass from parent
             />
         </>
     );
 
 };
+
 
 export default React.memo(ListRenderer);

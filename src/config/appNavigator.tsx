@@ -8,6 +8,8 @@ import * as Routes from './routes';
 
 const Stack = createStackNavigator();
 
+// App Navigator 
+
 const AppNavigation = (props: any) => {
   return (
     <Stack.Navigator
