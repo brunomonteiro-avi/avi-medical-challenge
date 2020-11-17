@@ -26,7 +26,7 @@ const App = () => {
   return (
     // Redux Provider hoc to set the sote
     <Provider store={store}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle='light-content' hidden={true}/>
       <SafeAreaView style={{ flex: 1 }}>
         <NavigationContainer> 
            <AppNavigation/>
