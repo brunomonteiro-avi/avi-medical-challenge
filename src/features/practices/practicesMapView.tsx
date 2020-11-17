@@ -1,8 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import {
-    Alert
+    Alert,
+    Platform
 } from 'react-native';
 import AnnotationContent from '../../components/AnnotationContent';
 import {
@@ -15,7 +16,7 @@ import {
     MapSelfLocationButtonText
 } from '../../components/styled'
 import * as strings from '../../translation/en.json'
-import { MAPBOX_TOKEN} from '../../config/constants'
+import { MAPBOX_TOKEN } from '../../config/constants'
 import { Practice } from './types'
 
 // Set token for Mapbox
@@ -28,6 +29,30 @@ const practicesMapView = (props: any) => {
 
     //For user location
     const [showUserLocation, setShowUserLocation] = useState<any>(false);
+    const [permission, setPermission] = useState(false)
+
+    useEffect(() => {
+      const task = async () => {
+        const per = await hasLocationPermission()
+        setPermission(per)
+      }
+      task()
+    }, [false])
+
+    // Ask for Permission on Android
+    const hasLocationPermission = async() =>{
+        if (
+            Platform.OS === 'web' ||
+            Platform.OS === 'ios' ||
+            (Platform.OS === 'android' && Platform.Version < 23)
+        ) {
+            return true
+        }
+        const isGranted = await MapboxGL.requestAndroidLocationPermissions()
+
+        return isGranted
+    }
+
 
     const {
         error,
@@ -51,13 +76,14 @@ const practicesMapView = (props: any) => {
             <MapboxGL.MapView
                 style={{ flex: 1 }}
                 scrollEnabled={true}
+
                 userTrackingMode={MapboxGL.UserTrackingModes.Follow}
             >
                 <MapboxGL.Camera followUserLocation={showUserLocation} zoomLevel={selectedPractice ? zoom : 10} centerCoordinate={[lon, lat]} />
-                <MapboxGL.UserLocation
+                {permission && <MapboxGL.UserLocation
                     visible={showUserLocation}
                     onPress={onUserMarkerPress}
-                />
+                />}
 
                 {selectedPractice ?
                     <MapboxGL.MarkerView coordinate={[lon, lat]} id={String(selectedPractice.practiceId)}>
@@ -75,15 +101,19 @@ const practicesMapView = (props: any) => {
 
             </MapboxGL.MapView>
         )
-    }, [showUserLocation]);
+    }, [showUserLocation, permission]);
 
     return (
         <Container>
             <MapView>
                 {renderMap}
-                <MapSelfLocationButton {...{ active: showUserLocation }} onPress={() => setShowUserLocation(!showUserLocation)} >
+                {permission &&
+                    <MapSelfLocationButton {...{ active: showUserLocation }} onPress={() => setShowUserLocation(!showUserLocation)} >
                     <MapSelfLocationButtonText {...{ active: showUserLocation }}>{strings.button.selfLocation}</MapSelfLocationButtonText>
                 </MapSelfLocationButton>
+                }
+                
+
             </MapView>
             <Footer>
                 <Button activeOpacity={0.7} onPress={() => goBack(null)} >
@@ -97,3 +127,4 @@ const practicesMapView = (props: any) => {
 
 
 export default practicesMapView;
+
